@@ -61,7 +61,7 @@ $(document).ready(function () {
   };
 
   // function to animate gifs
-  $(".gif").on('click', function () {
+  var animateGifs = function() {
 
     var state = $(this).attr("data-state");
 
@@ -72,9 +72,10 @@ $(document).ready(function () {
       $(this).attr("src", $(this).attr("data-still"));
       $(this).attr("data-state", "still");
     };
-  });
+  };
 
   renderButtons();
   $(document).on("click", ".show", displayGifs);
+  $(document).on("click", ".gif", animateGifs);
 
 });
