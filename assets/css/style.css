@@ -1,0 +1,18 @@
+body {
+    background-image: url(../images/background.jpg);
+    background-size: 100%;
+}
+
+button {
+    background-color: transparent;
+    color: silver;
+    margin: 5px;
+}
+
+img {
+    margin: 5px;
+}
+
+p { 
+    color: lightgreen;
+}
