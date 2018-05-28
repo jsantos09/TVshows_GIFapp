@@ -14,12 +14,23 @@ $(document).ready(function () {
       myBtn = $("<button>");
       myBtn.addClass("show");
       myBtn.attr("data-name", show);
-      myBtn.attr("state", "animate")
+      myBtn.attr("state", "not clicked");
       myBtn.text(show);
       $("#gif-buttons").append(myBtn);
     });
   };
 
+  // function to change button state
+    var changeBtnState = function() {
+      var btnState = $(".show").attr("state");
+      if (btnState === "not clicked") {
+        btnState = "clicked";
+
+      }
+      else {
+        btnState = "not clicked"
+      }
+    };
   // when the user clicks "search"
   $("#add-show").on('click', function (newBtn) {
     newBtn.preventDefault();
@@ -30,6 +41,8 @@ $(document).ready(function () {
 
   //  AXIOS request
   var axiosReq = function () {
+
+    changeBtnState();
 
     var show = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + show
@@ -44,7 +57,6 @@ $(document).ready(function () {
         var resultsDiv = $("#gif-results");
         resultsDiv.empty();
         var result = response.data.data;
-        console.log(result);
 
         // for loop to manipulate and display data
         for (var i = 0; i < 10; i++) {
@@ -72,7 +84,7 @@ $(document).ready(function () {
           gifDiv.prepend(ratingText);
           gifDiv.prepend(gifImg);
 
-          $(resultsDiv).append(gifDiv);
+          $(resultsDiv).prepend(gifDiv);
         }
 
       });
@@ -92,7 +104,6 @@ $(document).ready(function () {
       $(this).attr("data-state", "still");
     };
   };
-
 
   renderButtons();
   $(document).on("click", ".show", axiosReq);
