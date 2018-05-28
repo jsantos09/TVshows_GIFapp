@@ -1,15 +1,20 @@
 $(document).ready(function () {
 
-  // initial show array
-  var shows = ["Rick and Morty", "Dragon Ball Super", "Mythbusters", "That 70s show", "Game of Thrones", "El Chavo del 8"]
+  // initial show array and variables
+  var shows = ["Rick and Morty", "Dragon Ball Super", "Mythbusters", "That 70s show", "Game of Thrones", "Sharkweek"];
+  var myBtn;
 
   // function to display buttons on the page
   function renderButtons() {
     $("#gif-buttons").empty();
+    // for each function
     shows.forEach(function (show) {
-      var myBtn = $("<button>");
+
+      // add attr and class to each button
+      myBtn = $("<button>");
       myBtn.addClass("show");
       myBtn.attr("data-name", show);
+      myBtn.attr("state", "animate")
       myBtn.text(show);
       $("#gif-buttons").append(myBtn);
     });
@@ -23,8 +28,8 @@ $(document).ready(function () {
     renderButtons();
   });
 
-  // function to display images
-  function displayGifs() {
+  //  AXIOS request
+  var axiosReq = function () {
 
     var show = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + show
@@ -35,33 +40,47 @@ $(document).ready(function () {
       method: "GET"
     })
       .then(function (response) {
-        var gifData = response.data.data;
-        console.log(gifData);
-        var gifDiv = $("#gif-results");
-        gifDiv.empty();
 
+        var resultsDiv = $("#gif-results");
+        resultsDiv.empty();
+        var result = response.data.data;
+        console.log(result);
 
-        for (var i = 0; i < 11; i++) {
-          // create image and rating tags
+        // for loop to manipulate and display data
+        for (var i = 0; i < 10; i++) {
+
+          // html tags variables
+          var gifDiv = $("<div>");
           var gifImg = $("<img>");
-          var ratingP = $("<p>").text("Rating " + gifData[i].rating)
-          // add attr and class to img
-          gifImg.attr("data-still", gifData[i].images.fixed_height_still.url);
-          gifImg.attr("data-animate", gifData[i].images.fixed_height.url)
+          var ratingText = $("<p>");
+
+          // data variables
+          var rating = result[i].rating;
+          var imgStillURL = result[i].images.fixed_height_still.url;
+          var imgAnimateURL = result[i].images.fixed_height.url;
+
+          // add attr, class and src to img
+          gifImg.attr("data-still", imgStillURL);
+          gifImg.attr("data-animate", imgAnimateURL);
           gifImg.attr("data-state", "still");
           gifImg.addClass("gif");
 
           gifImg.attr("src", $(gifImg).attr("data-still"));
-          //display gif + rating on page
-          gifDiv.prepend(ratingP);
+
+          // set text and display rating + img
+          ratingText.text("Rating " + rating);
+          gifDiv.prepend(ratingText);
           gifDiv.prepend(gifImg);
+
+          $(resultsDiv).append(gifDiv);
         }
 
       });
   };
 
+
   // function to animate gifs
-  var animateGifs = function() {
+  var animateGifs = function () {
 
     var state = $(this).attr("data-state");
 
@@ -74,8 +93,9 @@ $(document).ready(function () {
     };
   };
 
+
   renderButtons();
-  $(document).on("click", ".show", displayGifs);
+  $(document).on("click", ".show", axiosReq);
   $(document).on("click", ".gif", animateGifs);
 
 });
